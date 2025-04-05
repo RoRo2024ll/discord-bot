@@ -5,9 +5,15 @@ from flask import Flask
 from threading import Thread
 from dotenv import load_dotenv
 
-# 환경변수 로드
+# ────────── 환경변수 로드 ──────────
 load_dotenv()
-TOKEN = os.getenv("DISCORD_TOKEN")
+TOKEN = os.getenv("TOKEN")  # 환경 변수 이름 수정
+
+# 디버깅용 출력
+if TOKEN is None:
+    print("❌ DISCORD TOKEN이 None입니다. 환경변수 설정을 확인하세요.")
+else:
+    print("✅ DISCORD TOKEN이 정상적으로 불러와졌습니다.")
 
 SAVE_FILE = "settings.json"
 
