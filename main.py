@@ -1,1 +1,7 @@
-print("TOKEN:", TOKEN)  # 실제 배포할 땐 삭제하자! 보안 위험!
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+TOKEN = os.getenv("TOKEN")
+
+print("TOKEN:", TOKEN)  # 배포 전에 꼭 지우기!!!
