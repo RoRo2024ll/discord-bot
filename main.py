@@ -1,8 +1,13 @@
 import discord
 import json
 import os
+from flask import Flask
+from threading import Thread
+from dotenv import load_dotenv
 
-TOKEN = "MTMyNzU0MDk4ODk5Mzg2Mzc2Mg.Gzyv6y.BIZTpjLK4CPmKzHY7d1Gxax-i6ucU1m0eP_We8"
+# 환경변수 로드
+load_dotenv()
+TOKEN = os.getenv("DISCORD_TOKEN")
 
 SAVE_FILE = "settings.json"
 
@@ -11,6 +16,21 @@ intents.message_content = True
 intents.guilds = True
 intents.members = True
 
+# ────────── Flask 웹서버 설정 (Render용) ──────────
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "봇이 실행 중입니다!"
+
+def run():
+    app.run(host='0.0.0.0', port=8080)
+
+def keep_alive():
+    t = Thread(target=run)
+    t.start()
+
+# ────────── 디스코드 봇 클래스 ──────────
 class MyBot(discord.Client):
     def __init__(self):
         super().__init__(intents=intents)
@@ -42,6 +62,7 @@ class MyBot(discord.Client):
 
 bot = MyBot()
 
+# ────────── 커맨드 구현 ──────────
 @bot.tree.command(name="채널지정", description="메시지를 보낼 채널을 지정합니다.")
 async def set_channel(interaction: discord.Interaction, channel: discord.TextChannel):
     bot.channel_mapping[str(interaction.guild.id)] = channel.id
@@ -155,4 +176,6 @@ async def send_button(interaction: discord.Interaction):
     await target_message.edit(view=RoleButton())
     await interaction.response.send_message("✅ 버튼이 성공적으로 메시지에 추가되었습니다!", ephemeral=True)
 
+# ────────── 실행 ──────────
+keep_alive()
 bot.run(TOKEN)
