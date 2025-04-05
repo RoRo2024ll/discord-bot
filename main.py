@@ -1,18 +1,15 @@
-import discord
-from discord.ext import commands
-import os
-from dotenv import load_dotenv
+# main.py 맨 아래에 추가
+from flask import Flask
+from threading import Thread
 
-load_dotenv()
-TOKEN = os.getenv("TOKEN")
+app = Flask('')
 
-intents = discord.Intents.default()
-intents.message_content = True  # 메시지 내용 접근만 허용
+@app.route('/')
+def home():
+    return "Bot is alive!"
 
-bot = commands.Bot(command_prefix="!", intents=intents)
+def run():
+    app.run(host='0.0.0.0', port=10000)
 
-@bot.event
-async def on_ready():
-    print(f"봇 로그인 완료: {bot.user}")
-
-bot.run(TOKEN)
+t = Thread(target=run)
+t.start()
